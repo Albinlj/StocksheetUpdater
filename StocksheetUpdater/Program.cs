@@ -15,12 +15,9 @@ namespace StocksheetUpdater
         static async Task Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
-                   .SetBasePath(GetApplicationRoot())
+                   .SetBasePath(Utils.GetApplicationRoot())
                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-
             IConfiguration configuration = builder.Build();
-
 
             var serviceProvider = new ServiceCollection()
                 .AddOptions()
@@ -28,21 +25,8 @@ namespace StocksheetUpdater
                 .AddSingleton<IUpdater, Updater>()
                 .BuildServiceProvider();
 
-
             var updater = serviceProvider.GetService<IUpdater>();
-
-
             await updater.Run();
-
-        }
-
-        public static string GetApplicationRoot()
-        {
-            var exePath = Path.GetDirectoryName(System.Reflection
-                              .Assembly.GetExecutingAssembly().CodeBase);
-            Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
-            var appRoot = appPathMatcher.Match(exePath).Value;
-            return appRoot;
         }
     }
 }
