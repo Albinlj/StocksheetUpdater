@@ -26,6 +26,9 @@ namespace StocksheetUpdater
                 .BuildServiceProvider();
 
             var updater = serviceProvider.GetService<IUpdater>();
+
+            Console.WriteLine("Running updater");
+
             await updater.Run();
         }
     }

@@ -12,32 +12,35 @@ namespace StocksheetUpdater
 {
     class Updater : IUpdater
     {
-        private readonly HttpClient _client;
-        private readonly IOptions<MySettings> _settings;
+        private readonly MySettings _settings;
+
+        private List<StockSpreadSheet> SpreadSheets { get; set; } = new List<StockSpreadSheet>();
 
 
         public Updater(IOptions<MySettings> settings)
         {
-            _settings = settings;
+            _settings = settings.Value;
         }
 
         public async Task Run()
         {
-            Console.WriteLine(_settings.Value.Laser);
 
+            foreach (var book in _settings.Books)
+            {
+                Console.WriteLine($"Opening book {book.Filename}");
 
-            Console.WriteLine("KOSAD!");
+                foreach (string sheetName in book.SheetNames)
+                {
+                    Console.WriteLine($"Opening sheet {sheetName}");
 
+                    var newSheet =
+                       new StockSpreadSheet(sheetName, _settings.FilePath + @"/" + book.Filename, _settings);
 
+                    Console.WriteLine("ajajaj");
 
-            StockSpreadSheet sheet =
-                new StockSpreadSheet(@"C:\Users\Alb\source\repos\StocksheetUpdater\StocksheetUpdater\Bok_A.xlsx");
-            await sheet.ReadName();
-            sheet.Print();
-
-
+                    SpreadSheets.Add(newSheet);
+                }
+            }
         }
-
-
     }
 }
